@@ -58,7 +58,8 @@ async function readWithGoogleVision(imageBase64, apiKey) {
   });
 
   if (!response.ok) {
-    throw new Error(`Google Vision OCR failed: ${response.status}`);
+    const errorText = await response.text();
+    throw new Error(`Google Vision OCR failed: ${response.status} ${errorText}`);
   }
 
   const data = await response.json();
