@@ -404,19 +404,22 @@ function ScanCardPage() {
     if (!videoRef.current?.videoWidth) return;
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
-    canvas.width = videoRef.current.videoWidth;
-    canvas.height = videoRef.current.videoHeight;
+    const maxSide = 1200;
+    const scale = Math.min(1, maxSide / Math.max(videoRef.current.videoWidth, videoRef.current.videoHeight));
+    canvas.width = Math.round(videoRef.current.videoWidth * scale);
+    canvas.height = Math.round(videoRef.current.videoHeight * scale);
     context.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
-    const image = canvas.toDataURL("image/jpeg", 0.92);
+    const image = canvas.toDataURL("image/jpeg", 0.72);
     setCapturedImage(image);
     setStatus("Captured");
 
     const data = await api("/api/scan-card", {
       method: "POST",
       body: { imageBase64: image }
-    }).catch(() => ({
-      message: "Image captured. OCR needs the backend deployment before card recognition can run.",
-      nextStep: "Deploy the Express backend or convert /api/scan-card into a Netlify Function."
+    }).catch((error) => ({
+      message: "Image captured, but OCR request failed.",
+      error: error.message,
+      nextStep: "Check the Netlify function log or Google Vision API billing/key settings."
     }));
     setScanResult(data);
   }
