@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.env
+*.log
+*.zip
+netlify-inline/
+app.js
+styles.css
+manifest.webmanifest
+service-worker.js
+icon.svg
