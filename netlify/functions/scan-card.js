@@ -1,6 +1,6 @@
 const CARD_CODE_PATTERN = /\b(OP|ST|EB|PRB|P)\s*-?\s*(\d{2,3})\s*-?\s*(\d{3})\b/i;
 
-exports.handler = async (event) => {
+export async function handler(event) {
   if (event.httpMethod !== "POST") {
     return json(405, { error: "Method not allowed." });
   }
@@ -40,7 +40,7 @@ exports.handler = async (event) => {
   } catch (error) {
     return json(500, { error: error.message || "Scan failed." });
   }
-};
+}
 
 async function readWithGoogleVision(imageBase64, apiKey) {
   const base64Content = imageBase64.includes(",") ? imageBase64.split(",").pop() : imageBase64;
